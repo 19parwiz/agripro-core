@@ -30,7 +30,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	router := newRouter(authProxy)
+	farmProxy, err := proxy.NewFarmProxy(cfg.FarmServiceURL)
+	if err != nil {
+		logger.Error("invalid farm service url", "error", err)
+		os.Exit(1)
+	}
+
+	router := newRouter(authProxy, farmProxy)
 
 	server := &http.Server{
 		Addr:         cfg.Addr(),
@@ -65,7 +71,7 @@ func main() {
 	logger.Info("gateway stopped")
 }
 
-func newRouter(authProxy http.Handler) chi.Router {
+func newRouter(authProxy, farmProxy http.Handler) chi.Router {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -76,8 +82,11 @@ func newRouter(authProxy http.Handler) chi.Router {
 	health := handler.NewHealthHandler()
 	r.Get("/health", health.Health)
 
-	// Forward auth requests to the auth service on port 8001.
 	r.Handle("/api/auth/*", authProxy)
+	r.Handle("/api/devices", farmProxy)
+	r.Handle("/api/devices/*", farmProxy)
+	r.Handle("/api/plants", farmProxy)
+	r.Handle("/api/plants/*", farmProxy)
 
 	return r
 }

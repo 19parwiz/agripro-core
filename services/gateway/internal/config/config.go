@@ -12,6 +12,9 @@ type Config struct {
 
 	// AuthServiceURL is where auth requests are forwarded.
 	AuthServiceURL string
+
+	// FarmServiceURL is where device and plant requests are forwarded.
+	FarmServiceURL string
 }
 
 // Load reads config from the environment with defaults for local dev.
@@ -20,6 +23,7 @@ func Load() Config {
 		Host:           getEnv("GATEWAY_HOST", "0.0.0.0"),
 		Port:           getEnv("GATEWAY_PORT", "8000"),
 		AuthServiceURL: getEnv("AUTH_SERVICE_URL", "http://localhost:8001"),
+		FarmServiceURL: getEnv("FARM_SERVICE_URL", "http://localhost:8002"),
 	}
 }
 
