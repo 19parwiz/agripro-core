@@ -1,0 +1,19 @@
+# Environment
+.env
+.env.local
+
+# Local notes
+progress.md
+
+# Go build output
+bin/
+*.exe
+*.test
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
